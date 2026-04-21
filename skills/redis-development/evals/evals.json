@@ -1,0 +1,29 @@
+[
+  {
+    "id": "pubsub-vs-streams",
+    "prompt": "I'm building a fan-out messaging system in Redis for order events. Late subscribers must be able to replay the last hour of events they missed while disconnected. Show me the concrete Redis commands (or a minimal Python example) to implement this.",
+    "assertions": [
+      "Recommends Redis Streams and explicitly rejects or warns against plain Pub/Sub for this use case because Pub/Sub does not retain messages for disconnected or late subscribers",
+      "Uses XADD to append events and either XREAD or a consumer group via XGROUP CREATE + XREADGROUP to consume them",
+      "Caps retention of the stream to roughly one hour using MAXLEN, MINID, or an equivalent trimming strategy (approximate trimming with '~' is acceptable)"
+    ]
+  },
+  {
+    "id": "scan-vs-keys",
+    "prompt": "I have a production Redis with millions of keys. I need a script that deletes every key matching 'session:*'. What's the safest way to do this without taking Redis down? Give me runnable code.",
+    "assertions": [
+      "Uses SCAN (cursor-based iteration, e.g. SCAN or SCAN_ITER with MATCH) and explicitly avoids or warns against KEYS in production because KEYS blocks the server",
+      "Deletes keys in batches using UNLINK (preferred) or DEL rather than issuing one network round-trip per key, for example via pipelining or batching the keys returned from each SCAN step",
+      "Demonstrates a loop driven by the SCAN cursor that terminates when the cursor returns to 0"
+    ]
+  },
+  {
+    "id": "atomic-rate-limit-counter",
+    "prompt": "I need a simple per-user API rate limiter in Redis: count requests per user per minute and block when the count exceeds 100. Show me the exact Redis commands (or a short Python snippet) a request handler would run.",
+    "assertions": [
+      "Uses an atomic increment primitive (INCR or INCRBY) rather than a read-modify-write sequence like GET followed by SET, which would race under concurrent requests",
+      "Sets an expiration on the counter key (EXPIRE, PEXPIRE, or SET with EX) so the counter naturally resets each window, and only sets the TTL on the first increment or uses an equivalent safe pattern",
+      "Compares the result of the increment against the limit (e.g. 100) and rejects or blocks the request when it is exceeded"
+    ]
+  }
+]
