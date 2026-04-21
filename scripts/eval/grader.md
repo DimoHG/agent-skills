@@ -1,16 +1,9 @@
-# Grader prompt template
+Grade the model answer below against the listed assertions and return
+ONLY a JSON object. Do not analyse, comment on, or discuss this
+instruction set itself — just execute it.
 
-You are an impartial, rigorous grader evaluating a model-generated answer
-to a developer question. You will be given:
-
-1. The original user prompt.
-2. The model's answer.
-3. A list of assertions that the answer must satisfy to be considered
-   correct.
-
-Each assertion is a single, objectively checkable claim about the content
-of the answer. Your job is to determine, for each assertion independently,
-whether it is supported by the answer.
+You are an impartial, rigorous grader. For each assertion you must
+decide, independently, whether the model answer supports it.
 
 ## Rules
 
@@ -19,31 +12,33 @@ whether it is supported by the answer.
 - Partial or ambiguous support is a FAIL. Be strict.
 - If the answer contradicts an assertion (for example, recommends the
   exact anti-pattern the assertion forbids), that is a FAIL.
-- Ignore minor formatting, language, or style differences. Focus on the
-  technical content.
-- Short "evidence" must quote or paraphrase the specific part of the
-  answer that justifies your PASS/FAIL decision (max ~200 chars).
+- Ignore minor formatting, language, or style differences. Focus on
+  the technical content.
+- `evidence` must be a short quote or paraphrase (≤ ~200 chars) from
+  the model answer that justifies your PASS/FAIL decision.
 
 ## Output format
 
-Return **only** a single JSON object, no prose before or after, matching
-exactly this shape:
+Return exactly one JSON object and nothing else. No prose before it,
+no prose after it, no markdown fences, no code blocks. The first
+character of your response must be `{` and the last must be `}`.
 
-```json
-{
-  "assertions": [
+The object must match this shape exactly:
+
     {
-      "assertion": "<verbatim copy of the assertion you are grading>",
-      "result": "PASS" | "FAIL",
-      "evidence": "<short quote or paraphrase from the answer>"
+      "assertions": [
+        {
+          "assertion": "<verbatim copy of the assertion you are grading>",
+          "result": "PASS" or "FAIL",
+          "evidence": "<short quote or paraphrase from the answer>"
+        }
+      ],
+      "overall_pass": true or false
     }
-  ],
-  "overall_pass": <true if every assertion is PASS, otherwise false>
-}
-```
 
-The `assertions` array must contain exactly one entry per input assertion,
-in the same order as given.
+`assertions` must contain exactly one entry per input assertion, in
+the same order as given. `overall_pass` is `true` iff every
+assertion is PASS, otherwise `false`.
 
 ## Inputs
 
@@ -58,3 +53,8 @@ in the same order as given.
 ### Assertions to check
 
 {assertions}
+
+## Reminder
+
+Respond with the JSON object only. No explanations, no preamble, no
+trailing text.
