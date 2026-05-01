@@ -1,0 +1,20 @@
+{
+  "name": "redis",
+  "interface": {
+    "displayName": "Redis"
+  },
+  "plugins": [
+    {
+      "name": "redis-development",
+      "source": {
+        "source": "local",
+        "path": "./plugins/redis-development"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
