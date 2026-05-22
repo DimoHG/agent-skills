@@ -8,7 +8,9 @@ npm install
 
 This installs dependencies and sets up Git hooks (via Husky) that validate and build before each commit.
 
-## Adding Rules
+## Adding Rules (deprecated)
+
+Note: We'll drop rules, in favor of [Agent Skills](https://agentskills.io) structure.
 
 Rules live in `skills/<skill-name>/rules/`. See `skills/redis-development/` for an example.
 
@@ -20,6 +22,22 @@ To add a new rule:
 4. Commit both the rule and the updated `AGENTS.md`
 
 The pre-commit hook will fail if `AGENTS.md` is out of sync with the rules.
+
+## Skill Structure
+
+Skills should move toward the standard Agent Skills package structure described in the [Anthropic Agent Skills documentation](https://docs.claude.com/en/docs/agents-and-tools/agent-skills).
+
+For published skill content, prefer:
+
+```text
+skills/<skill-name>/
+  SKILL.md
+  references/
+  scripts/
+  assets/
+```
+
+The PR workflow runs `skill-validator` in advisory mode and reports structure issues as warnings while we gradually move the repository toward the standard layout.
 
 ## Evaluating Skills
 
@@ -71,6 +89,7 @@ you performed instead.
 
 ```bash
 npm run validate  # Check rule files for errors
+npm run validate:skill-structure  # Report skill package structure issues
 npm run build     # Regenerate AGENTS.md from rules
 npm run eval      # Run configured skill eval suites
 ```
