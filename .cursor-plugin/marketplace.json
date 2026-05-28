@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Official Redis plugins for Cursor",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "pluginRoot": "skills"
   },
   "plugins": [
@@ -27,20 +27,12 @@
       "tags": ["redis", "performance", "connections"]
     },
     {
-      "name": "redis-query-engine",
-      "source": "redis-query-engine",
-      "description": "Redis Query Engine (RQE) — FT.CREATE schema, FT.SEARCH / FT.AGGREGATE, DIALECT 2, field types, zero-downtime updates.",
-      "version": "1.0.0",
+      "name": "redis-search",
+      "source": "redis-search",
+      "description": "Redis Search — FT.CREATE schema, FT.SEARCH / FT.AGGREGATE / FT.HYBRID, DIALECT 2, vector similarity (HNSW / FLAT), hybrid retrieval, RAG pipelines, zero-downtime index updates.",
+      "version": "0.1.0",
       "category": "database",
-      "tags": ["redis", "search", "query-engine"]
-    },
-    {
-      "name": "redis-vector-search",
-      "source": "redis-vector-search",
-      "description": "Redis vector search — HNSW vs FLAT, vector index configuration, hybrid search, the RAG retrieval pattern with RedisVL.",
-      "version": "1.0.0",
-      "category": "database",
-      "tags": ["redis", "vector-search", "rag", "ai"]
+      "tags": ["redis", "search", "query-engine", "vector-search", "hybrid", "rag", "ai"]
     },
     {
       "name": "redis-semantic-cache",

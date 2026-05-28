@@ -102,7 +102,7 @@ FT.SEARCH idx:products "@category:{audio} -@brand:{generic} (@price:[0 100] | @o
 
 Operators worth remembering: space = AND, `|` = OR, `-` = NOT, `~` = optional (scoring boost), `=>{$weight: N}` = boost. Escape hyphens and special characters inside TAG values (`@sku:{ABC\\-123}`). See [references/query-syntax.md](references/query-syntax.md) and [references/search-syntax-primitives.md](references/search-syntax-primitives.md) for the DSL vocabulary.
 
-For tokenization gotchas (stemming, stopwords, language) see [references/text-tokenization.md](references/text-tokenization.md). For result shaping (`SORTBY`, `RETURN`, `HIGHLIGHT`, `SUMMARIZE`, `NOCONTENT`) see [references/result-shaping.md](references/result-shaping.md).
+For tokenization gotchas (stemming, stopwords, language) see [references/text-tokenization.md](references/text-tokenization.md). For result shaping (`SORTBY`, `RETURN`, `HIGHLIGHT`, `SUMMARIZE`, `NOCONTENT`) see [references/result-shaping.md](references/result-shaping.md). For performance levers (pre-filters, `SORTABLE` fields, tight `RETURN`, `FT.PROFILE`) see [references/query-optimization.md](references/query-optimization.md).
 
 ## 4. Vector basics
 
