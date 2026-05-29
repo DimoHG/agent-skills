@@ -30,6 +30,19 @@ skills/<skill-name>/
 
 Use [skills/redis-core/](skills/redis-core/) as the reference layout. Editorial convention across this repo: keep `SKILL.md` under ~150 lines with summary tables and key principles inline; move full Python/Java code samples into `references/<topic>.md` (one file per source rule). The agent loads `SKILL.md` once on activation; reference files are loaded only when the task requires them.
 
+## Spec-Driven Workflow
+
+For non-trivial changes — new skills, restructuring, multi-file edits, new client references — write a numbered spec in [`/spec/`](spec/) first, iterate with reviewers, then implement. Trivial changes (typo fixes, single-line edits, renames) can go straight to code.
+
+Conventions:
+
+- **Filename:** `NNNN-kebab-topic.md` (zero-padded, sequential).
+- **Sections expected:** problem, goals, non-goals, current-state inventory, proposed changes, cross-cutting decisions, acceptance criteria, open questions, follow-ups, iteration log.
+- **Iteration log:** each meaningful revision logged with a date and one-line summary, so design history is traceable in-file.
+- **Cross-references:** specs that depend on or supersede earlier specs cite them by number.
+
+The `redis-search` skill is the product of specs 0001–0007; [`spec/0007-redis-search-skill-consolidation.md`](spec/0007-redis-search-skill-consolidation.md) is the layout authority for that skill.
+
 ## Adding a New Skill
 
 1. Create `skills/<skill-name>/SKILL.md` with the required frontmatter:
