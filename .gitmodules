@@ -1,3 +1,0 @@
-[submodule "redis-syntax-eval"]
-	path = redis-syntax-eval
-	url = https://github.com/adrianoamaral/redis-syntax-eval.git
