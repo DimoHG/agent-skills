@@ -34,6 +34,7 @@ Jedis equivalent: see [`java-jedis.md#1-minimum-supported-versions`](./java-jedi
 | Component | Minimum | Notes |
 |-----------|---------|-------|
 | `redis-py` | **5.0** | Earlier 4.x releases predate the consolidated `redis.commands.search.*` import paths and lack `IndexType.JSON` ergonomics. |
+| `redis-py` (for `HybridQuery`) | **7.1.0** | The `redis.commands.search.hybrid_query` module ships from `redis-py` 7.1.0. Older releases (5.x–7.0.x) lack the `HybridQuery` builder and `index.hybrid_search()`. |
 | Redis server (FT.SEARCH / FT.AGGREGATE) | **7.4** | Redis Search ships built-in from Redis 8.0; 7.4 still requires the RediSearch module. |
 | Redis server (`FT.HYBRID`) | **8.4.0** | Hard floor. Older Redis returns `unknown command 'FT.HYBRID'`. Fall back to pre-filter + `=>[KNN ...]` via FT.SEARCH. |
 | Python | 3.8+ | Type hints in `redis.commands.search.*` assume `typing` from 3.8. |
@@ -551,11 +552,11 @@ Index-time `EF_CONSTRUCTION` is set in the `VectorField` algorithm dict and is i
 
 Jedis equivalent: see [`java-jedis.md#10-fthybrid`](./java-jedis.md#10-fthybrid).
 
-**Version gate:** `FT.HYBRID` requires Redis ≥ **8.4.0**. On older Redis use the pre-filter + KNN pattern in §9. See [`command-selection.md`](../command-selection.md) for the SEARCH vs AGGREGATE vs HYBRID decision.
+**Version gate:** `FT.HYBRID` requires Redis ≥ **8.4.0** *and* `redis-py` ≥ **7.1.0** (the release that ships the `hybrid_query` module). On older Redis or older `redis-py`, use the pre-filter + KNN pattern in §9. See [`command-selection.md`](../command-selection.md) for the SEARCH vs AGGREGATE vs HYBRID decision.
 
 ### High-level builder (recommended)
 
-`redis-py` 5.x ships an `@experimental` high-level `HybridQuery` builder under `redis.commands.search.hybrid_query`. The shape: build a `HybridSearchQuery` (text leg) + `HybridVsimQuery` (vector leg), combine with a `CombineResultsMethod`, call `index.hybrid_search(...)`.
+`redis-py` ≥ **7.1.0** ships an `@experimental` high-level `HybridQuery` builder under `redis.commands.search.hybrid_query`. The shape: build a `HybridSearchQuery` (text leg) + `HybridVsimQuery` (vector leg), combine with a `CombineResultsMethod`, call `index.hybrid_search(...)`.
 
 ```python
 # STEP_START hybrid_query
@@ -728,6 +729,7 @@ Jedis equivalent: see [`java-jedis.md#13-common-errors--version-gotchas`](./java
 |---------|--------------|-----|
 | `unknown command 'FT.CREATE'` (or any other `FT.*`) | Redis < 8.0 without the RediSearch module loaded. | Load the module (`MODULE LOAD /path/to/redisearch.so` or via `loadmodule` in `redis.conf`), or upgrade to Redis ≥ 8.0 where Redis Search is built-in. |
 | `unknown command 'FT.HYBRID'` | Server < 8.4.0. | Upgrade or fall back to pre-filter + KNN via FT.SEARCH (§9). |
+| `ImportError` / `cannot import name 'HybridQuery'` from `redis.commands.search.hybrid_query` | `redis-py` < 7.1.0 — the `hybrid_query` module ships from 7.1.0. | Upgrade `redis-py` to ≥ 7.1.0, or fall back to pre-filter + KNN via FT.SEARCH (§9). |
 | `Syntax error at offset N near KNN` | Missing `DIALECT 2`. | Always `.dialect(2)` on every `Query` and `AggregateRequest`. |
 | `GEOSHAPE WITHIN/CONTAINS` returns syntax error | Missing `.dialect(3)`, or server lacks DIALECT 3 support. | Pass `.dialect(3)` explicitly; ensure Redis ≥ 7.2 with GEOSHAPE-capable RediSearch. |
 | `Vector dimension mismatch` | Query vector dim differs from index `DIM`. | Recompute embedding with the same model used at index time; assert `len(arr) == DIM`. |
