@@ -13,6 +13,8 @@
     "validate:claude-plugins": "node scripts/validate-claude-plugins.mjs",
     "validate:cursor-plugins": "node scripts/validate-cursor-plugins.mjs",
     "validate:plugins": "npm run validate:claude-plugins && npm run validate:cursor-plugins",
+    "bump": "node scripts/bump-version.mjs",
+    "check:version-bump": "node scripts/check-version-bump.mjs",
     "prepare": "husky"
   },
   "devDependencies": {

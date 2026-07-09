@@ -51,6 +51,40 @@ Use [skills/redis-core/](skills/redis-core/) as the reference layout. Editorial 
    - Cursor: add an entry to `.cursor-plugin/marketplace.json` pointing at `<skill-name>`.
 6. Validate: `npm run validate` (covers plugin manifests + agentskills.io spec).
 
+## Versioning (every content change)
+
+**If you change what a skill ships, bump its version in the same PR.** This is
+what tells the Cursor and Claude Code marketplaces there is a new release —
+without it, existing users stay pinned to the old copy. CI enforces this: a PR
+that edits shipped skill content without a version bump fails
+`npm run check:version-bump`.
+
+Don't hand-edit the version fields — a version lives in several files and they
+must stay in sync. Use the helper, which updates all of them at once:
+
+```bash
+npm run bump -- <skill-name> [patch|minor|major]   # default: patch
+```
+
+It bumps, for `<skill-name>`:
+- `skills/<skill-name>/SKILL.md` frontmatter `metadata.version`
+- `skills/<skill-name>/.cursor-plugin/plugin.json` `version`
+- the `<skill-name>` entry in `.cursor-plugin/marketplace.json`
+- both bundle versions: `.cursor-plugin/marketplace.json` and
+  `.claude-plugin/marketplace.json` `metadata.version` (+ the
+  `redis-development` entry — the only update signal Claude Code has, since it
+  ships every skill as one plugin).
+
+Pick the level by impact: `patch` for fixes/wording, `minor` for new
+guidance/references, `major` for breaking reorganizations. Editing only
+`evals/` does **not** require a bump (evals are internal tooling, not shipped).
+
+After the PR merges, publishing differs per marketplace:
+- **Claude Code** pulls from git — users get it via `/plugin marketplace update`.
+- **Cursor's public listing** does *not* auto-pull. The listing owner must
+  re-submit the repo at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish);
+  Cursor manually reviews each update.
+
 ## Running Validators
 
 ```bash
